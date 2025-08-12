@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Manhwa Tracker</title>
+<!-- 
+  This is the new icon code. 
+  The first link is for the favicon in the browser tab.
+  The second link is for the icon when you save the website to your home screen or desktop.
+  You can replace the placeholder URLs with the URLs to your own images.
+-->
+<link rel="icon" href="C:\Users\HP\Downloads\My bias.jpeg" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="C:\Users\HP\Downloads\My bias.jpeg">
+<style>
+  @import url('C:\Users\HP\Downloads\My bias.jpeg');
+  :root{
+    --bg1:#0f0f1a;
+    --bg2:#141421;
+    --card:#1c1c2b;
+    --muted:#a0a8b8;
+    --accent:#5a9bf6;
+    --accent2:#81c7f5;
+    --glass: rgba(255,255,255,0.05);
+    --shadow: rgba(0,0,0,0.6);
+  }
+  *{
+    box-sizing:border-box;
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  body{
+    margin:0;
+    background: linear-gradient(135deg, var(--bg1), var(--bg2));
+    color:#e0e6f0;
+    min-height:100vh;
+    padding: 24px 16px;
+    -webkit-font-smoothing: antialiased;
+    user-select:none;
+  }
+  .wrap{
+    max-width: 980px;
+    margin: 0 auto;
+    user-select: text;
+  }
+  header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom: 20px;
+  }
+  header h1{
+    margin:0;
+    font-weight: 600;
+    font-size: 2.3rem;
+    letter-spacing: 0.06em;
+    color: #fff;
+    text-shadow: 0 2px 6px var(--accent);
+  }
+  header p{
+    margin:0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .pill{
+    margin-left:auto;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    padding: 8px 16px;
+    border-radius: 9999px;
+    color: #0a1e42;
+    font-weight: 700;
+    font-size: 0.85rem;
+    box-shadow: 0 0 10px var(--accent);
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 420px;
+    gap: 18px;
+  }
+  @media (max-width: 850px){
+    .grid{
+      grid-template-columns:1fr;
+    }
+  }
+  .card{
+    background: var(--card);
+    border-radius: 18px;
+    padding: 22px 28px;
+    box-shadow: 0 8px 30px var(--shadow);
+    transition: box-shadow 0.3s ease;
+  }
+  .card:hover {
+    box-shadow: 0 12px 40px var(--accent);
+  }
+  .controls{
+    display:flex;
+    gap: 14px;
+    align-items:center;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  input[type="text"], input[type="search"]{
+    flex-grow: 1;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    padding: 14px 20px;
+    font-size: 1.1rem;
+    color: #e6ebff;
+    box-shadow: inset 0 0 12px rgba(255,255,255,0.06);
+    transition: border-color 0.3s ease;
+  }
+  input[type="text"]:focus, input[type="search"]:focus{
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    background: rgba(90, 155, 246, 0.06);
+  }
+  button{
+    background: var(--accent);
+    border:none;
+    border-radius: 14px;
+    padding: 14px 22px;
+    font-weight: 600;
+    color: #0c1f48;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(90,155,246,0.6);
+    transition: background 0.25s ease, box-shadow 0.25s ease;
+    user-select:none;
+  }
+  button:hover{
+    background: var(--accent2);
+    box-shadow: 0 8px 25px rgba(129,199,245,0.9);
+  }
+  button.btn-ghost {
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.12);
+    color: var(--muted);
+    box-shadow: none;
+    font-weight: 500;
+    padding: 12px 20px;
+  }
+  button.btn-ghost:hover {
+    background: rgba(129,199,245,0.15);
+    border-color: var(--accent2);
+    color: var(--accent2);
+    box-shadow: 0 0 10px var(--accent2);
+  }
+  .list{
+    max-height: 68vh;
+    overflow-y: auto;
+    margin-top: 18px;
+    padding-right: 10px;
+  }
+  .item{
+    background: rgba(255,255,255,0.05);
+    margin-bottom: 10px;
+    border-radius: 14px;
+    padding: 14px 20px;
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    user-select:text;
+    transition: background-color 0.3s ease;
+  }
+  .item.match{
+    border-left: 5px solid var(--accent);
+    background: rgba(90,155,246,0.12);
+    box-shadow: 0 0 15px var(--accent);
+  }
+  .title{
+    font-weight: 500;
+    font-size: 1rem;
+    flex-grow: 1;
+    text-align: left;
+    word-break: break-word;
+    user-select:text;
+  }
+  .score {
+    min-width: 44px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-weight: 700;
+    text-align: right;
+    margin-right: 14px;
+    user-select:none;
+  }
+  .rightgroup {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 12px;
+    transition: background-color 0.25s ease;
+    user-select:none;
+  }
+  .icon-btn:hover {
+    background: var(--accent2);
+    color: #0b1a36;
+    box-shadow: 0 0 8px var(--accent2);
+  }
+  .searchbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .hint {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 10px;
+    font-style: italic;
+  }
+  .small {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .edit-input{
+    width: 100%;
+    background: transparent;
+    border: 2px solid var(--accent);
+    padding: 10px 14px;
+    border-radius: 14px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  footer {
+    margin-top: 26px;
+    color: var(--muted);
+    text-align: center;
+    font-size: 0.9rem;
+  }
+  label {
+    font-size: 0.85rem;
+    user-select:none;
+    color: var(--muted);
+  }
+  input[type="checkbox"] {
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap" role="main" aria-label="Manhwa Tracker Application">
+    <header>
+      <h1>Manhwa Tracker</h1>
+    </header>
+
+    <div class="grid">
+      <!-- Left: search and results -->
+      <section class="card" aria-label="Manhwa search and results">
+        <div class="searchbar">
+          <input id="searchInput" type="search" placeholder="Search" aria-label="Search manhwa" autocomplete="off" spellcheck="false" />
+          <button id="clearSearch" class="btn-ghost" aria-label="Clear search">Clear</button>
+          <label><input id="exactOnly" type="checkbox" aria-label="Toggle exact search only" /> Exact only</label>
+        </div>
+        <div id="meta" class="small" aria-live="polite" aria-atomic="true" style="margin-top:6px;">Loaded list. Results update as you type.</div>
+        <div id="list" class="list" role="list" aria-live="polite" aria-relevant="additions"></div>
+
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px;">
+          <button id="exportBtn" class="btn" aria-label="Export manhwa list as text file">Export .txt</button>
+          <button id="clearBtn" class="btn-ghost" aria-label="Clear entire manhwa list">Clear all</button>
+          <div class="small" style="margin-left:auto;">Total: <strong id="totalCount">0</strong></div>
+        </div>
+      </section>
+
+      <!-- Right: add new manhwa & info -->
+      <aside>
+        <section class="card" aria-label="Add new manhwa">
+          <div style="display:flex;gap:12px;align-items:center;">
+            <input id="addInput" type="text" placeholder="Add new manhwa (Enter or Add)" aria-label="Add new manhwa" autocomplete="off" spellcheck="false" />
+            <button id="addBtn" class="btn" aria-label="Add manhwa">Add</button>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:10px;">
+            <button id="showAll" class="btn-ghost" aria-label="Show all manhwa">Show all</button>
+            <button id="topMatch" class="btn-ghost" aria-label="Show top 20 matches">Top 20 matches</button>
+          </div>
+          <div class="hint">Click <span class="small">Copy</span> to copy a title. Click ✏ to edit inline. Click 🗑 to delete.</div>
+        </section>
+
+        <section class="card" style="margin-top:18px;" aria-label="Instructions">
+          <strong>Quick tips</strong>
+          <ul style="padding-left:18px;margin-top:8px;text-align:left;color:var(--muted);font-size:0.9rem;">
+            <li>Search tolerates typos and small mistakes.</li>
+            <li>Add new titles exactly as you want them stored.</li>
+            <li>Your list auto-saves in the browser (offline friendly).</li>
+            <li>Export your list anytime as a text file.</li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+
+    <footer>Made for fast tracking. Want status filters (MUST READ, COMPLETED)? Just ask!</footer>
+  </div>
+
+<script>
+(() => {
+  // Correctly formatted PRELOADED data as a JavaScript array of strings.
+  const PRELOADED = [
+    "Qumahem*estism - COMPLETED",
+    "Rnadom chat - 350 (COMPLETED)",
+    "the extra's academy survival guide - 82(s1 end)",
+    "the demon prince goes to academy - 80",
+    "TBATE - 223",
+    "Kalli the champion - 76",
+    "Inf mage - 112",
+    "absoloute sword sense 107",
+    "myst might mahem - 51",
+    "Wind breaker - 528",
+    "Lookism - 534",
+    "the novels extra (remake) - 113",
+    "Magic academy's genius blinker - 47 (s1 End)",
+    "ORV - 248",
+    "Childhood of the Zenith - 46",
+    "I obtained a mythic item - 117",
+    "The regressed son of a duke is an assassin - 61",
+    "My exclusive tower guide - 52",
+    "Reborn as the enemy prince - 65",
+    "A villains will to survive - 25",
+    "Fated to be loved by villains - 20",
+    "Dragon devouring mage - 97",
+    "SSS class suicide hunter - 129",
+    "Regressing with the kings power - 82",
+    "Special civil server - 44",
+    "Swordmasters youngest son - 156",
+    "The max level player's 100th regression - 49",
+    "Solo level max newbie - 198",
+    "Back to chabi - 40 (updated) (MUST READ SOO GOOD)",
+    "damn reincarnation - 81",
+    "Life of a mgic academy mage - 111",
+    "The reincarnated assassin is a genius swordsman - 60",
+    "Thhe margraves bastard used to be the emperor - 66",
+    "the youngest son is a mage - 89",
+    "steel eating player - 75",
+    "The genius assassin who takes it all - 71",
+    "insanely talented player - 73(Peak)",
+    "juvenile prison - 48",
+    "what can i do alone - 37",
+    "The legendary hero is an academy honors student - 38",
+    "regressing as the reincarnated bastard of the sword clan - 49",
+    "pick me up infinite gacha - 148",
+    "Terminally-Ill Genius Dark Knight Chapter - 99",
+    "Necromancers Evolutionary traits - 82",
+    "Tow Truck Driver - 7 (MUST READ SOO GOOD)",
+    "shut up evil dragon i dont want to raise a child with you anymore - 42",
+    "Top 1 fighting tutoring - 59",
+    "I became an s rank hunter with the demon lord app - 66",
+    "I am the Strongest Awakener, Recognized By All Of The World‘s Cheat Masters - 58",
+    "My avatars's path to greatness - 42",
+    "There are no bad heroes in this world - 37",
+    "I became the genius bastard of a noble dark clan - 37",
+    "My bias gets on the last train - 33 (FUCKING PEAK READ IT READ IT. LAST LEFT OF WAS AT THE CONFESSION PART.)",
+    "Solo resurrection - 50",
+    "Return of the Apocalypse-Class Death Knight - 25",
+    "Surviving apocalypse - 55",
+    "Growth type superhero - 52",
+    "King of arena - 62",
+    "Surviving in a romance fantasy novel - 50",
+    "reality quest - 162",
+    "maybe meant to be - 121",
+    "The academy's sashimi sword master - 49",
+    "the Evil Ring - 61 (PEAK MUST READ)",
+    "Latna saga - 29",
+    "The Regressed Mercenary's Machinations - 49",
+    "Jungle juice - s3 ep 23(peak)"
+  ];
+
+  const STORAGE_KEY = 'manhwa_tracker_list_v1';
+  let titles = [];
+
+  const searchInput = document.getElementById('searchInput');
+  const clearSearchBtn = document.getElementById('clearSearch');
+  const exactOnlyCheckbox = document.getElementById('exactOnly');
+  const listEl = document.getElementById('list');
+  const metaEl = document.getElementById('meta');
+  const addInput = document.getElementById('addInput');
+  const addBtn = document.getElementById('addBtn');
+  const exportBtn = document.getElementById('exportBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const totalCountEl = document.getElementById('totalCount');
+  const showAllBtn = document.getElementById('showAll');
+  const topMatchBtn = document.getElementById('topMatch');
+  
+  // A simple custom modal to replace `alert` and `confirm` for better UX.
+  function showCustomModal(message, isConfirm = false, onConfirm = () => {}) {
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+          position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+          background-color: rgba(0, 0, 0, 0.7); display: flex;
+          justify-content: center; align-items: center; z-index: 1000;
+          font-family: 'Poppins', sans-serif;
+      `;
+      const modalContent = document.createElement('div');
+      modalContent.style.cssText = `
+          background-color: #1c1c2b; color: #e0e6f0; padding: 25px;
+          border-radius: 14px; text-align: center; max-width: 90%;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      `;
+      const messageEl = document.createElement('p');
+      messageEl.textContent = message;
+      messageEl.style.cssText = 'margin-bottom: 20px; font-size: 1.1rem;';
+      modalContent.appendChild(messageEl);
+
+      const closeButton = document.createElement('button');
+      closeButton.textContent = isConfirm ? 'Cancel' : 'OK';
+      closeButton.style.cssText = `
+          background: #5a9bf6; color: #0c1f48; border: none; padding: 10px 20px;
+          border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;
+          margin: 0 5px;
+      `;
+      closeButton.addEventListener('click', () => modal.remove());
+      modalContent.appendChild(closeButton);
+
+      if (isConfirm) {
+          const confirmButton = document.createElement('button');
+          confirmButton.textContent = 'Confirm';
+          confirmButton.style.cssText = `
+              background: #e53e3e; color: #fff; border: none; padding: 10px 20px;
+              border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;
+              margin: 0 5px;
+          `;
+          confirmButton.addEventListener('click', () => {
+              onConfirm();
+              modal.remove();
+          });
+          modalContent.appendChild(confirmButton);
+      }
+
+      modal.appendChild(modalContent);
+      document.body.appendChild(modal);
+  }
+
+  // Normalize string for fuzzy search
+  function normalizeForSearch(s){
+    return String(s || '')
+      .toLowerCase()
+      .replace(/[‘’“”…·•★♪—–_\/\\\(\)\[\]\{\},:\.;@#\$%\^&\*\+\=\|<>?~`'"]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  // Levenshtein distance for fuzzy scoring
+  function levenshtein(a,b){
+    if(a === b) return 0;
+    const al = a.length, bl = b.length;
+    if(al === 0) return bl;
+    if(bl === 0) return al;
+    let v0 = new Array(bl + 1), v1 = new Array(bl + 1);
+    for(let j=0;j<=bl;j++) v0[j] = j;
+    for(let i=0;i<al;i++){
+      v1[0] = i + 1;
+      const ai = a.charCodeAt(i);
+      for(let j=0;j<bl;j++){
+        const cost = (ai === b.charCodeAt(j)) ? 0 : 1;
+        const del = v0[j+1] + 1;
+        const ins = v1[j] + 1;
+        const sub = v0[j] + cost;
+        v1[j+1] = Math.min(del, ins, sub);
+      }
+      [v0,v1] = [v1,v0];
+    }
+    return v0[bl];
+  }
+
+  // Fuzzy matching score (0 to 1)
+  function fuzzyScore(titleNorm, qNorm){
+    if(!qNorm) return 0;
+    if(titleNorm.includes(qNorm)) return 1;
+
+    const t = titleNorm;
+    const q = qNorm;
+    const tLen = t.length, qLen = q.length;
+
+    let bestTokenScore = 0;
+    const tokens = t.split(' ').filter(Boolean);
+    for(const token of tokens){
+      const d = levenshtein(token, q);
+      const score = 1 - d / Math.max(token.length, qLen);
+      if(score > bestTokenScore) bestTokenScore = score;
+      if(bestTokenScore >= 0.98) break;
+    }
+
+    let bestSubScore = 0;
+    const minL = Math.max(1, Math.floor(qLen * 0.6));
+    const maxL = Math.min(tLen, Math.ceil(qLen * 1.6));
+    for(let L = minL; L <= maxL; L++){
+      for(let i = 0; i + L <= tLen; i++){
+        const sub = t.substr(i, L);
+        const d = levenshtein(sub, q);
+        const score = 1 - d / Math.max(L, qLen);
+        if(score > bestSubScore) bestSubScore = score;
+        if(bestSubScore >= 0.98) break;
+      }
+      if(bestSubScore >= 0.98) break;
+    }
+
+    return Math.max(0, Math.min(1, Math.max(bestTokenScore, bestSubScore)));
+  }
+
+  // Save titles to localStorage
+  function saveTitles(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(titles));
+  }
+
+  // Load titles from localStorage or fallback to PRELOADED
+  function loadTitles(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      try {
+        const arr = JSON.parse(raw);
+        if(Array.isArray(arr) && arr.length){
+          titles = arr;
+          return;
+        }
+      } catch(e){
+        console.error("Failed to parse stored titles, using preloaded list.");
+      }
+    }
+    // If no saved list, load PRELOADED and save it
+    titles = [...PRELOADED];
+    saveTitles();
+  }
+
+  // Render the list of titles with optional filter and sorting
+  function renderList(filter = '', exactOnly = false, maxItems = Infinity){
+    const filterNorm = normalizeForSearch(filter);
+    let results = [];
+
+    if(!filterNorm){
+      // Show all
+      results = titles.map(title => ({title, score: 1}));
+    } else {
+      for(const title of titles){
+        const titleNorm = normalizeForSearch(title);
+        let score = 0;
+        if(exactOnly){
+          score = (titleNorm === filterNorm) ? 1 : 0;
+        } else {
+          score = fuzzyScore(titleNorm, filterNorm);
+        }
+        if(score > 0) results.push({title, score});
+      }
+    }
+
+    // Sort by score descending, then alphabetically
+    results.sort((a,b) => {
+      if(b.score !== a.score) return b.score - a.score;
+      return a.title.localeCompare(b.title);
+    });
+
+    // Limit number of items
+    if(maxItems !== Infinity){
+      results = results.slice(0, maxItems);
+    }
+
+    // Clear existing list
+    listEl.innerHTML = '';
+
+    // Add each item as a div with buttons
+    for(const {title, score} of results){
+      const itemEl = document.createElement('div');
+      itemEl.className = 'item' + (score > 0.9 ? ' match' : '');
+      itemEl.setAttribute('role', 'listitem');
+
+      const titleEl = document.createElement('div');
+      titleEl.className = 'title';
+      titleEl.textContent = title;
+      itemEl.appendChild(titleEl);
+
+      const rightGroup = document.createElement('div');
+      rightGroup.className = 'rightgroup';
+
+      const scoreEl = document.createElement('div');
+      scoreEl.className = 'score';
+      if(score < 1) scoreEl.textContent = (score*100).toFixed(0) + '%';
+      else scoreEl.textContent = '';
+      rightGroup.appendChild(scoreEl);
+
+      // Copy button
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'icon-btn';
+      copyBtn.title = 'Copy';
+      copyBtn.textContent = 'Copy';
+      copyBtn.addEventListener('click', () => {
+        // Use document.execCommand for better compatibility in iframes
+        const tempInput = document.createElement('textarea');
+        tempInput.value = title;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => copyBtn.textContent = 'Copy', 1200);
+      });
+      rightGroup.appendChild(copyBtn);
+
+      // Edit button
+      const editBtn = document.createElement('button');
+      editBtn.className = 'icon-btn';
+      editBtn.title = 'Edit';
+      editBtn.textContent = '✏';
+      editBtn.addEventListener('click', () => {
+        startEditing(itemEl, title);
+      });
+      rightGroup.appendChild(editBtn);
+
+      // Delete button
+      const delBtn = document.createElement('button');
+      delBtn.className = 'icon-btn';
+      delBtn.title = 'Delete';
+      delBtn.textContent = '🗑';
+      delBtn.addEventListener('click', () => {
+        showCustomModal(`Are you sure you want to delete "${title}"?`, true, () => {
+          titles = titles.filter(t => t !== title);
+          saveTitles();
+          renderList(searchInput.value, exactOnlyCheckbox.checked);
+        });
+      });
+      rightGroup.appendChild(delBtn);
+
+      itemEl.appendChild(rightGroup);
+      listEl.appendChild(itemEl);
+    }
+
+    totalCountEl.textContent = results.length;
+    metaEl.textContent = `Showing ${results.length} result${results.length !== 1 ? 's' : ''}${filter ? ` for "${filter}"` : ''}.`;
+  }
+
+  // Start inline editing a title
+  function startEditing(itemEl, oldTitle){
+    const titleEl = itemEl.querySelector('.title');
+    const rightGroup = itemEl.querySelector('.rightgroup');
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = oldTitle;
+    input.className = 'edit-input';
+    titleEl.replaceWith(input);
+    rightGroup.style.display = 'none';
+    input.focus();
+    input.setSelectionRange(oldTitle.length, oldTitle.length);
+
+    function finishEdit(save){
+      if(save){
+        const newTitle = input.value.trim();
+        if(newTitle && newTitle !== oldTitle){
+          if(titles.includes(newTitle)){
+            showCustomModal('Title already exists!');
+            input.focus();
+            return;
+          }
+          const idx = titles.indexOf(oldTitle);
+          if(idx >= 0) {
+            titles[idx] = newTitle;
+            saveTitles();
+          }
+        }
+      }
+      input.replaceWith(titleEl);
+      rightGroup.style.display = 'flex';
+      renderList(searchInput.value, exactOnlyCheckbox.checked);
+    }
+
+    input.addEventListener('keydown', e => {
+      if(e.key === 'Enter'){
+        finishEdit(true);
+      } else if(e.key === 'Escape'){
+        finishEdit(false);
+      }
+    });
+    input.addEventListener('blur', () => {
+      finishEdit(true);
+    });
+  }
+
+  // Add new title
+  function addNewTitle(){
+    const val = addInput.value.trim();
+    if(!val) return;
+    if(titles.includes(val)){
+      showCustomModal('Title already exists!');
+      return;
+    }
+    titles.push(val);
+    saveTitles();
+    addInput.value = '';
+    renderList(searchInput.value, exactOnlyCheckbox.checked);
+  }
+
+  // Export list as .txt
+  function exportList(){
+    const blob = new Blob([titles.join('\n')], {type: 'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'manhwa_list.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Clear all with confirmation
+  function clearAll(){
+    showCustomModal('Are you sure you want to clear all manhwas? This action cannot be undone.', true, () => {
+      titles = [];
+      saveTitles();
+      renderList();
+    });
+  }
+
+  // Event listeners
+  searchInput.addEventListener('input', () => {
+    renderList(searchInput.value, exactOnlyCheckbox.checked);
+  });
+  clearSearchBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    renderList();
+  });
+  exactOnlyCheckbox.addEventListener('change', () => {
+    renderList(searchInput.value, exactOnlyCheckbox.checked);
+  });
+  addBtn.addEventListener('click', addNewTitle);
+  addInput.addEventListener('keydown', e => {
+    if(e.key === 'Enter') {
+      addNewTitle();
+    }
+  });
+  exportBtn.addEventListener('click', exportList);
+  clearBtn.addEventListener('click', clearAll);
+  showAllBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    renderList();
+  });
+  topMatchBtn.addEventListener('click', () => {
+    renderList(searchInput.value, exactOnlyCheckbox.checked, 20);
+  });
+
+  // Initialize
+  loadTitles();
+  renderList();
+
+})();
+</script>
+</body>
+</html>
